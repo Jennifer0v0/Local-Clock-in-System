@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Local Clock-in System</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #f0f4f8;
+      color: #2d3748;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.25rem;
+      color: #2b6cb0;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: #718096;
+      margin-bottom: 2rem;
+    }
+
+    /* Clock card */
+    .clock-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+      padding: 2rem 2.5rem;
+      text-align: center;
+      width: 100%;
+      max-width: 420px;
+      margin-bottom: 2rem;
+    }
+
+    #current-time {
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #1a202c;
+    }
+
+    #current-date {
+      font-size: 1rem;
+      color: #718096;
+      margin-bottom: 1.5rem;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.3rem 1rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+    .status-badge.out  { background: #fed7d7; color: #c53030; }
+    .status-badge.in   { background: #c6f6d5; color: #276749; }
+
+    .btn-row {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    button {
+      padding: 0.65rem 1.8rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    #btn-clock-in  { background: #38a169; color: #fff; }
+    #btn-clock-out { background: #e53e3e; color: #fff; }
+
+    /* Records table */
+    .records-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+      padding: 1.5rem 2rem;
+      width: 100%;
+      max-width: 700px;
+    }
+
+    .records-card h2 {
+      font-size: 1.1rem;
+      color: #2b6cb0;
+      margin-bottom: 1rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    thead th {
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      background: #ebf8ff;
+      color: #2c5282;
+      font-weight: 700;
+      border-bottom: 2px solid #bee3f8;
+    }
+
+    tbody tr:nth-child(even) { background: #f7fafc; }
+
+    tbody td {
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid #e2e8f0;
+      color: #4a5568;
+    }
+
+    .empty-msg {
+      text-align: center;
+      color: #a0aec0;
+      padding: 1.5rem 0;
+      font-style: italic;
+    }
+
+    .btn-clear {
+      margin-top: 1rem;
+      background: #e2e8f0;
+      color: #4a5568;
+      font-size: 0.82rem;
+      padding: 0.4rem 1rem;
+    }
+
+    footer {
+      margin-top: 2.5rem;
+      font-size: 0.78rem;
+      color: #a0aec0;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📋 Local Clock-in System</h1>
+  <p class="subtitle">Track your work sessions — all data stored locally in your browser</p>
+
+  <!-- Clock card -->
+  <div class="clock-card">
+    <div id="current-time">00:00:00</div>
+    <div id="current-date">—</div>
+
+    <span id="status-badge" class="status-badge out">Clocked Out</span>
+
+    <div class="btn-row">
+      <button id="btn-clock-in"  onclick="clockIn()">Clock In</button>
+      <button id="btn-clock-out" onclick="clockOut()" disabled>Clock Out</button>
+    </div>
+  </div>
+
+  <!-- Records card -->
+  <div class="records-card">
+    <h2>Session History</h2>
+    <table id="records-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Clock In</th>
+          <th>Clock Out</th>
+          <th>Duration</th>
+        </tr>
+      </thead>
+      <tbody id="records-body">
+        <!-- rows injected by JS -->
+      </tbody>
+    </table>
+    <p id="empty-msg" class="empty-msg">No sessions recorded yet.</p>
+    <button class="btn-clear" onclick="clearRecords()">Clear All Records</button>
+  </div>
+
+  <footer>Data is saved in your browser's localStorage — it is never sent to any server.</footer>
+
+  <script>
+    // ── Storage keys ──────────────────────────────────────────────
+    const KEY_RECORDS  = "clockin_records";
+    const KEY_ACTIVE   = "clockin_active_start";
+
+    // ── State ─────────────────────────────────────────────────────
+    let records = JSON.parse(localStorage.getItem(KEY_RECORDS) || "[]");
+    let activeStart = localStorage.getItem(KEY_ACTIVE) || null;
+
+    // ── Live clock ────────────────────────────────────────────────
+    function tick() {
+      const now = new Date();
+      document.getElementById("current-time").textContent =
+        now.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
+      document.getElementById("current-date").textContent =
+        now.toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+    }
+    setInterval(tick, 1000);
+    tick();
+
+    // ── UI helpers ────────────────────────────────────────────────
+    function setClockState(isClockedIn) {
+      document.getElementById("btn-clock-in").disabled  =  isClockedIn;
+      document.getElementById("btn-clock-out").disabled = !isClockedIn;
+      const badge = document.getElementById("status-badge");
+      if (isClockedIn) {
+        badge.textContent = "Clocked In";
+        badge.className   = "status-badge in";
+      } else {
+        badge.textContent = "Clocked Out";
+        badge.className   = "status-badge out";
+      }
+    }
+
+    function formatDateTime(isoString) {
+      const d = new Date(isoString);
+      return d.toLocaleString(undefined, {
+        month: "2-digit", day: "2-digit", year: "numeric",
+        hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false
+      });
+    }
+
+    function formatDuration(ms) {
+      const totalSec = Math.round(ms / 1000);
+      const h = Math.floor(totalSec / 3600);
+      const m = Math.floor((totalSec % 3600) / 60);
+      const s = totalSec % 60;
+      return [
+        h > 0 ? h + "h" : null,
+        m > 0 ? m + "m" : null,
+        s + "s"
+      ].filter(Boolean).join(" ");
+    }
+
+    function renderRecords() {
+      const tbody = document.getElementById("records-body");
+      const empty = document.getElementById("empty-msg");
+      tbody.innerHTML = "";
+
+      if (records.length === 0) {
+        empty.style.display = "block";
+        return;
+      }
+      empty.style.display = "none";
+
+      // Show newest first
+      for (let i = records.length - 1; i >= 0; i--) {
+        const rec = records[i];
+        const tr = document.createElement("tr");
+        const num = i + 1;
+        const duration = rec.clockOut
+          ? formatDuration(new Date(rec.clockOut) - new Date(rec.clockIn))
+          : "—";
+        tr.innerHTML = `
+          <td>${num}</td>
+          <td>${formatDateTime(rec.clockIn)}</td>
+          <td>${rec.clockOut ? formatDateTime(rec.clockOut) : "<em>In progress…</em>"}</td>
+          <td>${duration}</td>
+        `;
+        tbody.appendChild(tr);
+      }
+    }
+
+    // ── Actions ───────────────────────────────────────────────────
+    function clockIn() {
+      const now = new Date().toISOString();
+      activeStart = now;
+      localStorage.setItem(KEY_ACTIVE, now);
+
+      records.push({ clockIn: now, clockOut: null });
+      localStorage.setItem(KEY_RECORDS, JSON.stringify(records));
+
+      setClockState(true);
+      renderRecords();
+    }
+
+    function clockOut() {
+      if (!activeStart) return;
+      const now = new Date().toISOString();
+
+      // Update the last open record
+      if (records.length > 0) {
+        const last = records[records.length - 1];
+        if (!last.clockOut) last.clockOut = now;
+      }
+      localStorage.setItem(KEY_RECORDS, JSON.stringify(records));
+
+      activeStart = null;
+      localStorage.removeItem(KEY_ACTIVE);
+
+      setClockState(false);
+      renderRecords();
+    }
+
+    function clearRecords() {
+      if (!confirm("Clear all session records?")) return;
+      records = [];
+      localStorage.removeItem(KEY_RECORDS);
+      renderRecords();
+    }
+
+    // ── Init ──────────────────────────────────────────────────────
+    setClockState(activeStart !== null);
+    renderRecords();
+  </script>
+</body>
+</html>
