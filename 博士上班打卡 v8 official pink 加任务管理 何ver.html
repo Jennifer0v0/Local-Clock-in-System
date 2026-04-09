@@ -210,7 +210,7 @@
                             <div class="text-sm text-gray-600 mb-2">
                                 <div>上班时间: 12:00 - 17:00</div>
                                 <div>下班时间: 14:00 - 20:00</div>
-                                <div class="text-green-600">合格标准: 15:00前上班, 19:00前下班</div>
+                                <div class="text-green-600">合格标准: 15:00前上班, 17:30-19:00下班</div>
                             </div>
                             <div class="mt-4 space-y-3">
                                 <button id="afternoon-checkin" class="w-full bg-[#D79DA4] hover:bg-[#c88d95] text-white py-3 px-4 rounded-lg font-medium btn-shadow transition-all">
@@ -954,7 +954,10 @@
             },
             afternoon: {
                 checkIn: { hour: 15, minute: 0 },
-                checkOut: { hour: 19, minute: 0 }
+                checkOut: {
+                    qualifiedStart: { hour: 17, minute: 30 },
+                    qualifiedEnd: { hour: 19, minute: 0 }
+                }
             },
             evening: {
                 checkIn: { hour: 20, minute: 0 },
@@ -1024,6 +1027,21 @@
                 }
 
                 if (currentMinutes < startMinutes) {
+                    return { qualified: false, text: '早退', className: 'text-blue-600' };
+                }
+
+                return { qualified: false, text: '早点休息', className: 'text-blue-600' };
+            }
+
+            if (period === 'afternoon') {
+                const qualifiedStart = boundaryToMinutes(checkinRules.afternoon.checkOut.qualifiedStart);
+                const qualifiedEnd = boundaryToMinutes(checkinRules.afternoon.checkOut.qualifiedEnd);
+
+                if (currentMinutes >= qualifiedStart && currentMinutes <= qualifiedEnd) {
+                    return { qualified: true, text: '合格', className: 'text-green-600' };
+                }
+
+                if (currentMinutes < qualifiedStart) {
                     return { qualified: false, text: '早退', className: 'text-blue-600' };
                 }
 
@@ -1689,7 +1707,19 @@
         }
 
         function getTaskGroupStyle(taskName) {
-            return taskGroupPalettes[hashTaskName(taskName) % taskGroupPalettes.length];
+            const hash = hashTaskName(taskName);
+            const hue = hash % 360;
+            const saturation = 62 + (hash >> 8) % 18;
+            const blockLightness = 90 - (hash >> 16) % 4;
+            return {
+                badgeBackground: `hsla(${hue}, ${saturation}%, 95%, 0.96)`,
+                badgeColor: `hsl(${hue}, 55%, 34%)`,
+                badgeBorder: `hsla(${hue}, ${saturation}%, 80%, 0.95)`,
+                dotBackground: `hsl(${hue}, ${saturation}%, 55%)`,
+                blockBackground: `hsla(${hue}, ${saturation}%, ${blockLightness}%, 0.96)`,
+                blockColor: `hsl(${hue}, 48%, 28%)`,
+                blockBorder: `hsla(${hue}, ${saturation}%, 80%, 1)`
+            };
         }
 
         function getTaskGroupOccurrences(tasks) {
@@ -2028,8 +2058,8 @@
                                 <td class="py-2 px-4 border-b border-gray-200">
                                     <div class="flex items-center gap-2 flex-wrap">
                                         <span class="font-medium text-gray-800">${group.name}</span>
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium ${taskGroupStyle.badge}">
-                                            <span class="w-1.5 h-1.5 rounded-full ${taskGroupStyle.dot} mr-1"></span>${mergedSegments.length} 段
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium" style="background-color: ${taskGroupStyle.badgeBackground}; color: ${taskGroupStyle.badgeColor}; border: 1px solid ${taskGroupStyle.badgeBorder};">
+                                            <span class="w-1.5 h-1.5 rounded-full mr-1" style="background-color: ${taskGroupStyle.dotBackground};"></span>${mergedSegments.length} 段
                                         </span>
                                     </div>
                                 </td>
@@ -2131,10 +2161,33 @@
             const axisStartHour = 6;
             const axisEndHour = 24;
 
-            const mergedRanges = groupedTasks.flatMap(group => {
+            const scheduleGroups = groupedTasks.map(group => {
                 const sortedTasks = [...group.tasks].sort((left, right) => parseTaskTimeToMinutes(left.startTime) - parseTaskTimeToMinutes(right.startTime));
-                return mergeContiguousTaskSegments(sortedTasks);
+                const mergedSegments = mergeContiguousTaskSegments(sortedTasks);
+                const firstSegment = mergedSegments[0];
+                const lastSegment = mergedSegments[mergedSegments.length - 1];
+                const startMinute = parseTaskTimeToMinutes(firstSegment.startTime);
+                const endMinute = parseTaskTimeToMinutes(lastSegment.endTime);
+
+                return {
+                    name: group.name,
+                    style: getTaskGroupStyle(group.name),
+                    startTime: firstSegment.startTime,
+                    endTime: lastSegment.endTime,
+                    startMinute,
+                    endMinute,
+                    mergedSegments
+                };
             });
+
+            scheduleGroups.sort((left, right) => {
+                if (left.startMinute !== right.startMinute) {
+                    return left.startMinute - right.startMinute;
+                }
+                return left.endMinute - right.endMinute;
+            });
+
+            const mergedRanges = scheduleGroups;
 
             const slotHeights = [];
             for (let hour = axisStartHour; hour < axisEndHour; hour++) {
@@ -2172,6 +2225,30 @@
                 return offset + ((minute / 60) * currentSlotHeight);
             };
 
+            scheduleGroups.forEach(group => {
+                const top = getTimeY(group.startTime);
+                const durationHeight = Math.max(getTimeY(group.endTime) - getTimeY(group.startTime), 44);
+                const contentHeight = Math.max(72, 48 + (group.mergedSegments.length * 28));
+                const height = Math.max(durationHeight, contentHeight);
+
+                group.top = top;
+                group.height = height;
+                group.bottom = top + height;
+            });
+
+            const lanes = [];
+            scheduleGroups.forEach(group => {
+                let laneIndex = lanes.findIndex(lane => group.top >= lane.bottom);
+                if (laneIndex === -1) {
+                    laneIndex = lanes.length;
+                    lanes.push({ events: [], bottom: group.bottom });
+                } else {
+                    lanes[laneIndex].bottom = group.bottom;
+                }
+
+                lanes[laneIndex].events.push(group);
+            });
+
             if (scheduleAxis) {
                 scheduleAxis.style.height = `${totalHeight}px`;
                 scheduleAxis.className = 'relative w-16 flex-none border-r border-gray-300 pr-3';
@@ -2189,46 +2266,42 @@
                 scheduleLanes.className = 'relative flex items-start gap-4';
             }
 
-            groupedTasks.forEach(group => {
-                const taskGroupStyle = getTaskGroupStyle(group.name);
-                const sortedTasks = [...group.tasks].sort((left, right) => parseTaskTimeToMinutes(left.startTime) - parseTaskTimeToMinutes(right.startTime));
-                const mergedSegments = mergeContiguousTaskSegments(sortedTasks);
-                const firstTask = mergedSegments[0];
-                const lastTask = mergedSegments[mergedSegments.length - 1];
-
-                const top = getTimeY(firstTask.startTime);
-                const contentHeight = Math.max(72, 48 + (mergedSegments.length * 28));
-                const durationHeight = Math.max(getTimeY(lastTask.endTime) - getTimeY(firstTask.startTime), 44);
-                const height = Math.max(durationHeight, contentHeight);
-
+            lanes.forEach(laneData => {
                 const lane = document.createElement('div');
                 lane.className = 'relative w-52 flex-none';
                 lane.style.height = `${totalHeight}px`;
 
-                const taskBlock = document.createElement('div');
-                taskBlock.className = `absolute left-0 right-0 border p-3 rounded-md shadow-md overflow-hidden transition-colors ${taskGroupStyle.block} cursor-pointer`;
-                taskBlock.style.top = `${top}px`;
-                taskBlock.style.height = `${height}px`;
+                laneData.events.forEach(event => {
+                    const top = event.top;
+                    const height = event.height;
+                    const segmentChips = event.mergedSegments.map((segment, index) => {
+                        const segmentLabel = event.mergedSegments.length === 1 ? '' : (index === 0 ? '起始段' : `续${index}`);
+                        return event.mergedSegments.length === 1
+                            ? `<div class="flex items-center justify-end gap-2 px-2 py-1 rounded-full text-[10px] font-medium bg-white/80 text-inherit whitespace-nowrap"><span class="tabular-nums">${segment.startTime}-${segment.endTime}</span></div>`
+                            : `<div class="flex items-center justify-between gap-2 px-2 py-1 rounded-full text-[10px] font-medium bg-white/80 text-inherit whitespace-nowrap"><span>${segmentLabel}</span><span class="tabular-nums">${segment.startTime}-${segment.endTime}</span></div>`;
+                    }).join('');
 
-                const segmentChips = mergedSegments.map((segment, index) => {
-                    const segmentIndex = index + 1;
-                    const segmentLabel = mergedSegments.length === 1 ? '' : (segmentIndex === 1 ? '起始段' : `续${segmentIndex - 1}`);
-                    return mergedSegments.length === 1
-                        ? `<div class="flex items-center justify-end gap-2 px-2 py-1 rounded-full text-[10px] font-medium bg-white/80 text-inherit whitespace-nowrap"><span class="tabular-nums">${segment.startTime}-${segment.endTime}</span></div>`
-                        : `<div class="flex items-center justify-between gap-2 px-2 py-1 rounded-full text-[10px] font-medium bg-white/80 text-inherit whitespace-nowrap"><span>${segmentLabel}</span><span class="tabular-nums">${segment.startTime}-${segment.endTime}</span></div>`;
-                }).join('');
+                    const taskBlock = document.createElement('div');
+                    taskBlock.className = 'absolute left-0 right-0 border p-3 rounded-md shadow-md overflow-hidden transition-colors cursor-pointer';
+                    taskBlock.style.backgroundColor = event.style.blockBackground;
+                    taskBlock.style.color = event.style.blockColor;
+                    taskBlock.style.borderColor = event.style.blockBorder;
+                    taskBlock.style.top = `${top}px`;
+                    taskBlock.style.height = `${height}px`;
 
-                taskBlock.innerHTML = `
-                    <div class="flex items-center justify-between gap-2 mb-2">
-                        <div class="font-medium text-sm truncate">${group.name}</div>
-                        <div class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium ${taskGroupStyle.badge}">
-                            <span class="w-1.5 h-1.5 rounded-full ${taskGroupStyle.dot} mr-1"></span>${mergedSegments.length} 段
+                    taskBlock.innerHTML = `
+                        <div class="flex items-center justify-between gap-2 mb-2">
+                            <div class="font-medium text-sm truncate">${event.name}</div>
+                            <div class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium" style="background-color: ${event.style.badgeBackground}; color: ${event.style.badgeColor}; border: 1px solid ${event.style.badgeBorder};">
+                                <span class="w-1.5 h-1.5 rounded-full mr-1" style="background-color: ${event.style.dotBackground};"></span>${event.mergedSegments.length} 段
+                            </div>
                         </div>
-                    </div>
-                    <div class="grid grid-cols-1 gap-1 text-xs leading-5">${segmentChips}</div>
-                `;
+                        <div class="grid grid-cols-1 gap-1 text-xs leading-5">${segmentChips}</div>
+                    `;
 
-                lane.appendChild(taskBlock);
+                    lane.appendChild(taskBlock);
+                });
+
                 if (scheduleLanes) {
                     scheduleLanes.appendChild(lane);
                 }
