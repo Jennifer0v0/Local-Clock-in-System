@@ -60,6 +60,40 @@
             .quote-breathing {
                 animation: quote-breathe 5.5s ease-in-out infinite;
             }
+            #daily-quote {
+                cursor: pointer;
+                user-select: none;
+            }
+            #daily-quote:hover {
+                cursor: url("data:image/svg+xml,%3Csvg role='img' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Ctitle%3EPipecat%3C/title%3E%3Cpath d='M3.309 5.116a.87.87 0 0 1 .958.24L7.369 8.89h9.262l3.102-3.536a.867.867 0 0 1 1.52.573v7.807H24v1.735h-4.482V8.232l-1.842 2.099a.87.87 0 0 1-.652.295H6.976a.87.87 0 0 1-.652-.295l-1.842-2.1v7.239H0v-1.735h2.747V5.928c0-.362.224-.685.562-.812m16.209 12.089H24v1.735h-4.482zM0 17.205h4.482v1.735H0zm9.253-2.892a1.157 1.157 0 1 1-2.314 0 1.157 1.157 0 0 1 2.314 0m7.807 0a1.157 1.157 0 1 1-2.313 0 1.157 1.157 0 0 1 2.313 0'/%3E%3C/svg%3E") 7 3, pointer;
+            }
+            .nav-icon-slot {
+                width: 1.25rem;
+                height: 1.25rem;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                flex: 0 0 auto;
+                align-self: center;
+                line-height: 0;
+            }
+            .nav-icon-slot > i {
+                display: block;
+                font-size: 17px;
+                line-height: 1;
+                transform-origin: center;
+            }
+            .nav-icon-slot > svg {
+                display: block;
+                width: 17px;
+                height: 17px;
+            }
+            .nav-icon-clock {
+                transform: scale(1.2);
+            }
+            .nav-icon-phone {
+                transform: scale(1.6);
+            }
             @keyframes popup {
                 0% { transform: scale(0); opacity: 0; }
                 70% { transform: scale(1.1); opacity: 1; }
@@ -94,37 +128,43 @@
                         <li>
                             <button id="nav-checkin" class="w-full text-left px-4 py-3 rounded-md bg-primary text-white flex items-center justify-between">
                                 <span class="font-medium">打卡记录</span>
-                                <i class="fa fa-clock-o fa-fw text-[17px] leading-none"></i>
+                                <span class="nav-icon-slot nav-icon-clock"><i class="fa fa-clock-o fa-fw"></i></span>
                             </button>
                         </li>
                         <li>
                             <button id="nav-phone" class="w-full text-left px-4 py-3 rounded-md hover:bg-gray-100 flex items-center justify-between">
                                 <span class="font-medium">摸鱼克制</span>
-                                <i class="fa fa-mobile-phone fa-fw text-[17px] leading-none"></i>
+                                <span class="nav-icon-slot nav-icon-phone"><i class="fa fa-mobile-phone fa-fw"></i></span>
                             </button>
                         </li>
                         <li>
                             <button id="nav-tasks" class="w-full text-left px-4 py-3 rounded-md hover:bg-gray-100 flex items-center justify-between">
                                 <span class="font-medium">任务管理</span>
-                                <i class="fa fa-tasks fa-fw text-[17px] leading-none"></i>
+                                <span class="nav-icon-slot"><i class="fa fa-tasks fa-fw"></i></span>
                             </button>
                         </li>
                         <li>
                             <button id="nav-schedule" class="w-full text-left px-4 py-3 rounded-md hover:bg-gray-100 flex items-center justify-between">
                                 <span class="font-medium">日程管理</span>
-                                <i class="fa fa-calendar-check-o fa-fw text-[17px] leading-none"></i>
+                                <span class="nav-icon-slot"><i class="fa fa-calendar-check-o fa-fw"></i></span>
+                            </button>
+                        </li>
+                        <li>
+                            <button id="nav-history-tasks" class="w-full text-left px-4 py-3 rounded-md hover:bg-gray-100 flex items-center justify-between">
+                                <span class="font-medium">历史任务</span>
+                                <span class="nav-icon-slot"><i class="fa fa-calendar fa-fw"></i></span>
                             </button>
                         </li>
                         <li>
                             <button id="nav-leave" class="w-full text-left px-4 py-3 rounded-md hover:bg-gray-100 flex items-center justify-between">
                                 <span class="font-medium">请假记录</span>
-                                <i class="fa fa-calendar-minus-o fa-fw text-[17px] leading-none"></i>
+                                <span class="nav-icon-slot"><i class="fa fa-calendar-minus-o fa-fw"></i></span>
                             </button>
                         </li>
                         <li>
                             <button id="nav-stats" class="w-full text-left px-4 py-3 rounded-md hover:bg-gray-100 flex items-center justify-between">
                                 <span class="font-medium">统计分析</span>
-                                <i class="fa fa-bar-chart fa-fw text-[17px] leading-none"></i>
+                                <span class="nav-icon-slot"><i class="fa fa-bar-chart fa-fw"></i></span>
                             </button>
                         </li>
                     </ul>
@@ -301,7 +341,9 @@
                 <!-- 手机克制模块 -->
                 <section id="phone-section" class="bg-white rounded-lg shadow-lg p-6 mb-6 hidden">
                     <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-                        <i class="fa fa-mobile mr-2 text-primary"></i>摸鱼克制记录
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2 text-primary">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+                        </svg>摸鱼克制记录
                     </h2>
                     
                     <div class="text-center mb-8">
@@ -481,6 +523,41 @@
                     </div>
                 </section>
 
+                <!-- 历史任务模块 -->
+                <section id="history-tasks-section" class="bg-white rounded-lg shadow-lg p-6 mb-6 hidden">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                        <i class="fa fa-calendar mr-2 text-primary"></i>历史任务
+                    </h2>
+
+                    <div class="bg-rose-50 rounded-lg p-4 mb-6">
+                        <div class="flex items-center justify-between gap-3 mb-4">
+                            <button id="history-tasks-prev-month" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg text-sm font-medium transition-all">
+                                <i class="fa fa-angle-left mr-1"></i>上个月
+                            </button>
+                            <div id="history-tasks-month-label" class="text-lg font-semibold text-primary"></div>
+                            <button id="history-tasks-next-month" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg text-sm font-medium transition-all">
+                                下个月<i class="fa fa-angle-right ml-1"></i>
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-7 gap-2 text-center text-xs font-medium text-gray-500 mb-2">
+                            <div>日</div>
+                            <div>一</div>
+                            <div>二</div>
+                            <div>三</div>
+                            <div>四</div>
+                            <div>五</div>
+                            <div>六</div>
+                        </div>
+                        <div id="history-tasks-calendar-grid" class="grid grid-cols-7 gap-2"></div>
+                    </div>
+
+                    <div class="bg-rose-50 rounded-lg p-4">
+                        <h3 id="history-tasks-date-title" class="text-lg font-semibold text-primary mb-3">历史任务记录</h3>
+                        <div id="history-tasks-list" class="space-y-3"></div>
+                    </div>
+                </section>
+
                 <!-- 请假记录模块 -->
                 <section id="leave-section" class="bg-white rounded-lg shadow-lg p-6 mb-6 hidden">
                     <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
@@ -622,12 +699,15 @@
         let phoneResistData = { totalCount: 0, records: {} }; // 手机克制数据
         let taskData = {}; // 任务数据
         let scheduleData = { selectedDate: '', todos: {} }; // 日程管理数据
+        let historyTaskView = { selectedDate: '', currentYear: null, currentMonth: null }; // 历史任务月历视图
         let leaveData = []; // 请假数据
         let achievements = []; // 成就数据
         let currentTasks = []; // 当前进行中的任务列表
         let taskTimer = null; // 任务计时器
         let testDateTime = null; // 测试时间覆盖
         let currentQuoteIndex = -1; // 当前展示的鼓励句子索引
+        let nextQuoteRefreshAt = 0; // 下一次自动切换鼓励句子的时间戳
+        const quoteAutoRefreshIntervalMs = 30 * 60 * 1000; // 自动切换间隔：30分钟
 
         const dailyQuotes = [
             '今日播下敬业种，明日收获乐业果。',
@@ -728,7 +808,46 @@
             '把执行力练出来，难题就会变轻。',
             '认真是最稳的捷径。',
             '先把基础打牢，再去追求更快。',
-            '别让一时的松散，换来后面的返工。'
+            '别让一时的松散，换来后面的返工。',
+            '把今天该交付的，今天交付。',
+            '真正的效率，是少返工。',
+            '把优先级排清楚，心就不乱。',
+            '先从最难的一件开始，后面会更轻松。',
+            '每完成一小步，都是在降低焦虑。',
+            '把问题写下来，答案就会更清楚。',
+            '及时复盘，才能持续进步。',
+            '不把希望押在运气上。',
+            '时间不会管理人，只有人管理时间。',
+            '拖延一分钟，压力多一分。',
+            '把专注留给最重要的事。',
+            '今天的执行力，就是明天的选择权。',
+            '当下认真一点，未来轻松很多。',
+            '你做过的每个细节，都会回到结果里。',
+            '先明确目标，再投入精力。',
+            '把复杂变简单，是能力。',
+            '完成比完美更重要，稳定比冲刺更重要。',
+            '不怕起点慢，就怕中途散。',
+            '把琐事流程化，把精力留给关键。',
+            '让行动先于情绪。',
+            '把重要的事做成习惯。',
+            '越自律，越自由。',
+            '别被短期舒服换来长期被动。',
+            '每次按时开始，都是在积累胜率。',
+            '稳扎稳打，胜在长期。',
+            '把节奏握在自己手里。',
+            '先处理关键路径，再优化边角。',
+            '不逃避难题，难题就会变小。',
+            '用结果说话，用行动兑现。',
+            '今天不糊弄，明天不补锅。',
+            '做正确的事，再把事做正确。',
+            '把想做变成在做，把在做变成做成。',
+            '能落地的计划，才是好计划。',
+            '每一段专注，都是未来的缓冲垫。',
+            '给时间以边界，给任务以终点。',
+            '先完成闭环，再追求增量。',
+            '别让犹豫偷走执行力。',
+            '把今天的确定性做出来。',
+            '你认真过的每一分钟都算数。'
         ];
         
         // 成就列表
@@ -768,6 +887,9 @@
 
             // 初始化日程管理功能
             initScheduleManagement();
+
+            // 初始化历史任务功能
+            initHistoryTaskManagement();
             
             // 初始化请假功能
             initLeaveManagement();
@@ -777,6 +899,9 @@
 
             // 初始化测试时间功能
             initTestTimeControls();
+
+            // 初始化鼓励句子交互
+            initDailyQuoteControls();
             
             // 更新今日状态
             updateTodayStatus();
@@ -902,14 +1027,44 @@
             updateCheckinButtons();
         }
 
-        function updateDailyQuote(now = getEffectiveDateTime()) {
-            const quoteIndex = Math.floor(((now.getHours() * 60) + now.getMinutes()) / 120) % dailyQuotes.length;
-            if (quoteIndex === currentQuoteIndex) {
+        function initDailyQuoteControls() {
+            const quoteElement = document.getElementById('daily-quote');
+            if (!quoteElement) return;
+
+            quoteElement.addEventListener('click', function() {
+                updateDailyQuote(getEffectiveDateTime(), true);
+            });
+        }
+
+        function getRandomQuoteIndex(excludedIndex = -1) {
+            if (dailyQuotes.length <= 1) {
+                return 0;
+            }
+
+            let quoteIndex = excludedIndex;
+            while (quoteIndex === excludedIndex) {
+                quoteIndex = Math.floor(Math.random() * dailyQuotes.length);
+            }
+            return quoteIndex;
+        }
+
+        function updateDailyQuote(now = getEffectiveDateTime(), forceRandom = false) {
+            const nowTimestamp = now.getTime();
+            const shouldRefresh = forceRandom || currentQuoteIndex === -1 || nowTimestamp >= nextQuoteRefreshAt;
+
+            if (!shouldRefresh) {
                 return;
             }
 
+            const quoteIndex = getRandomQuoteIndex(currentQuoteIndex);
             currentQuoteIndex = quoteIndex;
+            nextQuoteRefreshAt = nowTimestamp + quoteAutoRefreshIntervalMs;
             const quoteElement = document.getElementById('daily-quote');
+
+            if (!quoteElement) {
+                return;
+            }
+
             quoteElement.classList.add('opacity-0');
 
             window.clearTimeout(window.dailyQuoteTimer);
@@ -1094,8 +1249,8 @@
         
         // 初始化导航切换
         function initNavigation() {
-            const sections = ['checkin-section', 'phone-section', 'tasks-section', 'schedule-section', 'leave-section', 'stats-section'];
-            const navButtons = ['nav-checkin', 'nav-phone', 'nav-tasks', 'nav-schedule', 'nav-leave', 'nav-stats'];
+            const sections = ['checkin-section', 'phone-section', 'tasks-section', 'schedule-section', 'history-tasks-section', 'leave-section', 'stats-section'];
+            const navButtons = ['nav-checkin', 'nav-phone', 'nav-tasks', 'nav-schedule', 'nav-history-tasks', 'nav-leave', 'nav-stats'];
             
             navButtons.forEach((btnId, index) => {
                 document.getElementById(btnId).addEventListener('click', function() {
@@ -1677,6 +1832,9 @@
             
             // 更新日程表
             updateSchedule();
+
+            // 更新历史任务
+            refreshHistoryTasksView();
         }
 
         function getTaskElapsedMs(task) {
@@ -1955,6 +2113,9 @@
             
             // 更新日程表
             updateSchedule();
+
+            // 更新历史任务
+            refreshHistoryTasksView();
             
             // 更新今日状态
             updateTodayStatus();
@@ -1981,6 +2142,7 @@
             saveData();
             updateTodayTasksList();
             updateSchedule();
+            refreshHistoryTasksView();
             updateTodayStatus();
         }
 
@@ -2123,6 +2285,7 @@
                         saveData();
                         updateTodayTasksList();
                         updateSchedule();
+                        refreshHistoryTasksView();
                         updateTodayStatus();
                     }
         
@@ -2502,6 +2665,151 @@
             saveData();
             renderScheduleCalendar();
             renderSelectedDateTodos();
+        }
+
+        function initHistoryTaskManagement() {
+            const defaultDate = getTodayString();
+            const selectedDate = historyTaskView.selectedDate || defaultDate;
+            const selected = new Date(`${selectedDate}T00:00:00`);
+            historyTaskView.selectedDate = selectedDate;
+            historyTaskView.currentYear = selected.getFullYear();
+            historyTaskView.currentMonth = selected.getMonth();
+
+            document.getElementById('history-tasks-prev-month').addEventListener('click', function() {
+                historyTaskView.currentMonth--;
+                if (historyTaskView.currentMonth < 0) {
+                    historyTaskView.currentMonth = 11;
+                    historyTaskView.currentYear--;
+                }
+                renderHistoryTaskCalendar();
+            });
+
+            document.getElementById('history-tasks-next-month').addEventListener('click', function() {
+                historyTaskView.currentMonth++;
+                if (historyTaskView.currentMonth > 11) {
+                    historyTaskView.currentMonth = 0;
+                    historyTaskView.currentYear++;
+                }
+                renderHistoryTaskCalendar();
+            });
+
+            renderHistoryTaskCalendar();
+            renderSelectedDateHistoryTasks();
+        }
+
+        function refreshHistoryTasksView() {
+            if (!document.getElementById('history-tasks-calendar-grid')) {
+                return;
+            }
+
+            renderHistoryTaskCalendar();
+            renderSelectedDateHistoryTasks();
+        }
+
+        function getHistoryTaskSummaryByDate(dateKey) {
+            const tasks = taskData[dateKey] || [];
+            const totalMinutes = tasks.reduce((sum, task) => sum + (task.duration || 0), 0);
+            const groupedCount = groupTasksByName(tasks).length;
+            return {
+                tasks,
+                groupedCount,
+                totalMinutes
+            };
+        }
+
+        function formatTaskDurationLabel(totalMinutes) {
+            const hours = Math.floor(totalMinutes / 60);
+            const minutes = totalMinutes % 60;
+            return hours > 0 ? `${hours}小时${minutes}分钟` : `${minutes}分钟`;
+        }
+
+        function renderHistoryTaskCalendar() {
+            const year = historyTaskView.currentYear;
+            const month = historyTaskView.currentMonth;
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = getTodayString();
+
+            document.getElementById('history-tasks-month-label').textContent = `${year}年 ${month + 1}月`;
+
+            const grid = document.getElementById('history-tasks-calendar-grid');
+            grid.innerHTML = '';
+
+            for (let i = 0; i < firstDay; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'h-20 rounded-lg bg-transparent';
+                grid.appendChild(emptyCell);
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateKey = formatDateKey(year, month, day);
+                const summary = getHistoryTaskSummaryByDate(dateKey);
+                const hasHistory = summary.tasks.length > 0;
+                const selected = historyTaskView.selectedDate === dateKey;
+                const isToday = today === dateKey;
+
+                const dayCell = document.createElement('button');
+                dayCell.type = 'button';
+                dayCell.dataset.dateKey = dateKey;
+                dayCell.className = `h-20 rounded-lg border p-2 text-left transition-all ${selected ? 'border-primary bg-primary/10' : 'border-gray-200 bg-white hover:border-primary/60'} ${isToday ? 'ring-1 ring-primary/40' : ''}`;
+                dayCell.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-700">${day}</span>
+                        ${hasHistory ? `<span class="text-[11px] px-1.5 py-0.5 rounded-full bg-rose-100 text-rose-700">${summary.groupedCount}组</span>` : ''}
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-500 truncate">${hasHistory ? `完成${summary.tasks.length}段 · ${formatTaskDurationLabel(summary.totalMinutes)}` : ''}</div>
+                `;
+
+                dayCell.addEventListener('click', function() {
+                    historyTaskView.selectedDate = dateKey;
+                    renderHistoryTaskCalendar();
+                    renderSelectedDateHistoryTasks();
+                });
+
+                grid.appendChild(dayCell);
+            }
+        }
+
+        function renderSelectedDateHistoryTasks() {
+            const selectedDate = historyTaskView.selectedDate || getTodayString();
+            historyTaskView.selectedDate = selectedDate;
+
+            const titleDate = new Date(`${selectedDate}T00:00:00`);
+            const titleText = titleDate.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' });
+            document.getElementById('history-tasks-date-title').textContent = `${titleText} 历史任务`;
+
+            const { tasks } = getHistoryTaskSummaryByDate(selectedDate);
+            const listContainer = document.getElementById('history-tasks-list');
+
+            if (!tasks.length) {
+                listContainer.innerHTML = '<div class="text-sm text-gray-500">这一天暂无已完成任务</div>';
+                return;
+            }
+
+            const groupedTasks = groupTasksByName(tasks);
+            listContainer.innerHTML = '';
+
+            groupedTasks.forEach(group => {
+                const sortedTasks = [...group.tasks].sort((left, right) => parseTaskTimeToMinutes(left.startTime) - parseTaskTimeToMinutes(right.startTime));
+                const mergedSegments = mergeContiguousTaskSegments(sortedTasks);
+                const totalDuration = mergedSegments.reduce((sum, segment) => sum + (segment.duration || 0), 0);
+                const taskGroupStyle = getTaskGroupStyle(group.name);
+                const timeline = mergedSegments.map(segment => `${segment.startTime}-${segment.endTime}`).join(' / ');
+
+                const row = document.createElement('div');
+                row.className = 'bg-white border border-gray-200 rounded-lg p-3';
+                row.innerHTML = `
+                    <div class="flex items-center justify-between gap-3 mb-1.5">
+                        <div class="font-medium text-gray-800 truncate">${group.name}</div>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium" style="background-color: ${taskGroupStyle.badgeBackground}; color: ${taskGroupStyle.badgeColor}; border: 1px solid ${taskGroupStyle.badgeBorder};">
+                            <span class="w-1.5 h-1.5 rounded-full mr-1" style="background-color: ${taskGroupStyle.dotBackground};"></span>${mergedSegments.length} 段
+                        </span>
+                    </div>
+                    <div class="text-sm text-gray-600">时间段：${timeline}</div>
+                    <div class="text-sm text-gray-600 mt-1">总时长：${formatTaskDurationLabel(totalDuration)}</div>
+                `;
+                listContainer.appendChild(row);
+            });
         }
         
         // 初始化请假功能
