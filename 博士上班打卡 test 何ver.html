@@ -284,6 +284,9 @@
                                 <button id="evening-checkout" class="w-full bg-[#D79DA4] hover:bg-[#c88d95] text-gray-700 py-3 px-4 rounded-lg font-medium transition-all" disabled>
                                     晚上下班
                                 </button>
+                                <button id="evening-archery" class="w-full bg-[#FFCCCC] hover:bg-[#D4ACBF] text-white py-3 px-4 rounded-lg font-medium transition-all" disabled>
+                                    射箭
+                                </button>
                             </div>
                             <div class="mt-4 text-center text-sm">
                                 <div id="evening-checkin-time" class="text-gray-600">上班: -</div>
@@ -1145,6 +1148,10 @@
                 return { qualified: true, text: '运动去了~', className: 'text-rose-400' };
             }
 
+            if (period === 'evening' && checkoutMode === 'archery') {
+                return { qualified: true, text: '射箭去了~', className: 'text-rose-400' };
+            }
+
             const currentMinutes = timeToMinutes(timeString);
 
             if (period === 'morning') {
@@ -1215,6 +1222,10 @@
         function getPeriodSummaryStatus(period, periodData) {
             if (period === 'afternoon' && periodData.checkOutMode === 'exercise') {
                 return { text: '运动去了~', className: 'text-rose-400' };
+            }
+
+            if (period === 'evening' && periodData.checkOutMode === 'archery') {
+                return { text: '射箭去了~', className: 'text-rose-400' };
             }
 
             if (periodData.checkIn && periodData.checkOut) {
@@ -1317,6 +1328,10 @@
             document.getElementById('evening-checkout').addEventListener('click', function() {
                 checkOut('evening');
             });
+
+            document.getElementById('evening-archery').addEventListener('click', function() {
+                checkOut('evening', 'archery');
+            });
             
             // 更新打卡按钮状态
             updateCheckinButtons();
@@ -1347,6 +1362,10 @@
                 afternoonExercise.disabled = true;
                 afternoonExercise.classList.add('bg-gray-200', 'text-gray-500');
                 afternoonExercise.classList.remove('bg-[#FFCCCC]', 'hover:bg-[#D4ACBF]', 'text-white');
+                const eveningArchery = document.getElementById('evening-archery');
+                eveningArchery.disabled = true;
+                eveningArchery.classList.add('bg-gray-200', 'text-gray-500');
+                eveningArchery.classList.remove('bg-[#FFCCCC]', 'hover:bg-[#D4ACBF]', 'text-white');
                 return;
             }
             
@@ -1369,9 +1388,11 @@
             // 晚上打卡按钮状态
             const eveningCheckin = checkinData[today].evening.checkIn;
             const eveningCheckout = checkinData[today].evening.checkOut;
+            const eveningArchery = document.getElementById('evening-archery');
             
             document.getElementById('evening-checkin').disabled = eveningCheckin !== null || currentHour < 17 || currentHour >= 24;
             document.getElementById('evening-checkout').disabled = eveningCheckout !== null || eveningCheckin === null;
+            eveningArchery.disabled = eveningCheckout !== null || eveningCheckin === null;
             
             // 更新按钮样式
             ['morning', 'afternoon', 'evening'].forEach(period => {
@@ -1403,6 +1424,14 @@
             } else {
                 afternoonExercise.classList.add('bg-[#FFCCCC]', 'hover:bg-[#D4ACBF]', 'text-white');
                 afternoonExercise.classList.remove('bg-gray-200', 'text-gray-500');
+            }
+
+            if (eveningArchery.disabled) {
+                eveningArchery.classList.add('bg-gray-200', 'text-gray-500');
+                eveningArchery.classList.remove('bg-[#FFCCCC]', 'hover:bg-[#D4ACBF]', 'text-white');
+            } else {
+                eveningArchery.classList.add('bg-[#FFCCCC]', 'hover:bg-[#D4ACBF]', 'text-white');
+                eveningArchery.classList.remove('bg-gray-200', 'text-gray-500');
             }
             
             // 更新打卡时间显示
