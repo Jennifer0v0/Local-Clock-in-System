@@ -1,0 +1,8 @@
+name = "clockin-sync"
+main = "src/index.js"
+compatibility_date = "2026-04-17"
+
+[[kv_namespaces]]
+binding = "SYNC_KV"
+id = "3ba0662e7a4d451ab752993dc29f9c5f"
+preview_id = "604df055abd1495e86a1ee404d40458c"
