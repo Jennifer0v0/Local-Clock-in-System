@@ -281,7 +281,7 @@
                             <div class="text-sm text-gray-600 mb-2">
                                 <div>上班时间: 17:00 - 22:00</div>
                                 <div>下班时间: 20:00 - 24:00</div>
-                                <div class="text-green-600">合格标准: 20:00前上班, 21:00-22:00下班</div>
+                                <div class="text-green-600">合格标准: 20:00前上班, 22:00-23:00下班</div>
                             </div>
                             <div class="mt-4 space-y-3">
                                 <button id="evening-checkin" class="w-full bg-[#D79DA4] hover:bg-[#c88d95] text-white py-3 px-4 rounded-lg font-medium btn-shadow transition-all">
@@ -524,11 +524,6 @@
                         <h3 id="selected-date-title" class="text-lg font-semibold text-primary mb-3">今日 To Do</h3>
                         <div class="flex flex-col md:flex-row gap-3 mb-4">
                             <input type="text" id="schedule-todo-input" placeholder="输入待办事项" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                            <select id="schedule-todo-priority" class="md:w-36 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-white text-sm text-gray-700">
-                                <option value="3">高优先级</option>
-                                <option value="2" selected>中优先级</option>
-                                <option value="1">低优先级</option>
-                            </select>
                             <button id="add-schedule-todo" class="bg-primary hover:bg-primary/90 text-white py-2 px-6 rounded-lg font-medium btn-shadow transition-all">
                                 添加事项
                             </button>
@@ -580,20 +575,11 @@
                     
                     <!-- 添加请假 -->
                     <div class="bg-rose-50 rounded-lg p-4 mb-6">
-                        <h3 class="text-lg font-semibold text-primary mb-1">添加请假</h3>
-                        <p class="text-xs text-gray-500 mb-3">默认周末上班，如不上班也要请假。</p>
+                        <h3 class="text-lg font-semibold text-primary mb-3">添加请假</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label for="leave-start-date" class="block text-sm font-medium text-gray-700 mb-1">请假日期区间</label>
-                                <div class="grid grid-cols-2 gap-2">
-                                    <input type="date" id="leave-start-date" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                                    <input type="date" id="leave-end-date" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                                </div>
-                                <div class="grid grid-cols-2 gap-2 mt-2">
-                                    <input type="time" id="leave-start-time" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="开始时间(选填)">
-                                    <input type="time" id="leave-end-time" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="结束时间(选填)">
-                                </div>
-                                <p class="text-xs text-gray-500 mt-1">时间选填，不填则按全天请假处理。</p>
+                                <label for="leave-date" class="block text-sm font-medium text-gray-700 mb-1">请假日期</label>
+                                <input type="date" id="leave-date" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
                             </div>
                             <div>
                                 <label for="leave-reason" class="block text-sm font-medium text-gray-700 mb-1">请假理由</label>
@@ -678,7 +664,7 @@
                     </div>
                     
                     <!-- 综合统计 -->
-                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div class="bg-rose-50 rounded-lg p-4 text-center">
                             <div class="text-3xl font-bold text-primary mb-1" id="total-checkin-days">0</div>
                             <div class="text-sm text-gray-600">总打卡天数</div>
@@ -690,10 +676,6 @@
                         <div class="bg-rose-50 rounded-lg p-4 text-center">
                             <div class="text-3xl font-bold text-primary mb-1" id="total-phone-resist">0</div>
                             <div class="text-sm text-gray-600">总克制次数</div>
-                        </div>
-                        <div class="bg-rose-50 rounded-lg p-4 text-center">
-                            <div class="text-3xl font-bold text-primary mb-1" id="total-leave-days">0</div>
-                            <div class="text-sm text-gray-600">请假天数</div>
                         </div>
                         <div class="bg-rose-50 rounded-lg p-4 text-center">
                             <div class="text-3xl font-bold text-primary mb-1" id="achievement-count">0</div>
@@ -743,9 +725,8 @@
                             <button id="cloud-sync-save" class="rounded-lg bg-primary px-4 py-2 font-medium text-white btn-shadow transition-all hover:bg-primary/90">保存设置</button>
                             <button id="cloud-sync-pull" class="rounded-lg bg-gray-200 px-4 py-2 font-medium text-gray-700 transition-all hover:bg-gray-300">从云端拉取</button>
                             <button id="cloud-sync-push" class="rounded-lg bg-[#FFCCCC] px-4 py-2 font-medium text-white transition-all hover:bg-[#D4ACBF]">立即同步</button>
-                            <button id="cloud-sync-restore" class="rounded-lg bg-amber-100 px-4 py-2 font-medium text-amber-800 transition-all hover:bg-amber-200">恢复最近同步前快照</button>
                         </div>
-                        <p class="mt-2 text-xs text-gray-500">接口需要支持同一路径的 GET / PUT，返回包含 updatedAt 和 data 的 JSON。首次启用时会尽量避免覆盖已有数据。点击“从云端拉取”前会先自动保存一份本地快照，可用上面的按钮恢复。</p>
+                        <p class="mt-2 text-xs text-gray-500">接口需要支持同一路径的 GET / PUT，返回包含 updatedAt 和 data 的 JSON。首次启用时会尽量避免覆盖已有数据。</p>
                     </div>
 
                     <div class="bg-rose-50 rounded-lg p-4 mb-6">
@@ -833,8 +814,6 @@
         const cloudSyncSettingsKey = 'cloudSyncSettings';
         const cloudSyncStateKey = 'cloudSyncState';
         const cloudSyncClientIdKey = 'cloudSyncClientId';
-        const cloudSyncRecoveryKey = 'cloudSyncRecoverySnapshots';
-        const cloudSyncRecoveryLimit = 10;
         const cloudSyncPushDebounceMs = 1200;
         const cloudSyncPollIntervalMs = 5 * 60 * 1000;
 
@@ -1303,8 +1282,6 @@
                 return false;
             }
 
-            saveRecoverySnapshot('before-apply-cloud-snapshot');
-
             const data = snapshot.data;
             checkinData = data.checkinData && typeof data.checkinData === 'object' ? data.checkinData : {};
             phoneResistData = data.phoneResistData && typeof data.phoneResistData === 'object' ? data.phoneResistData : { totalCount: 0, records: {} };
@@ -1612,7 +1589,6 @@
             const saveButton = document.getElementById('cloud-sync-save');
             const pullButton = document.getElementById('cloud-sync-pull');
             const pushButton = document.getElementById('cloud-sync-push');
-            const restoreButton = document.getElementById('cloud-sync-restore');
             const exportYearInput = document.getElementById('cloud-archive-year');
             const exportYearButton = document.getElementById('cloud-archive-export');
             const syncWindowInput = document.getElementById('cloud-sync-window-months');
@@ -1650,10 +1626,6 @@
 
             pullButton.addEventListener('click', async function() {
                 persistSettingsFromForm();
-                if (!confirm('从云端拉取会覆盖本地当前数据，是否继续？')) {
-                    return;
-                }
-                saveRecoverySnapshot('before-manual-pull');
                 await pullRemoteStateToLocal(true, true);
             });
 
@@ -1661,15 +1633,6 @@
                 persistSettingsFromForm();
                 await pushLocalStateToCloud(true);
             });
-
-            if (restoreButton) {
-                restoreButton.addEventListener('click', function() {
-                    if (!confirm('将恢复最近一次同步前快照，并覆盖当前本地数据，是否继续？')) {
-                        return;
-                    }
-                    restoreLatestRecoverySnapshot();
-                });
-            }
 
             [enabledElement, endpointElement, tokenElement, datasetElement].forEach(element => {
                 element.addEventListener('change', persistSettingsFromForm);
@@ -1765,31 +1728,12 @@
             phoneResistData.totalCount = Object.values(phoneResistData.records || {}).reduce((sum, record) => sum + (record?.count || 0), 0);
         }
 
-        function leaveRecordOverlapsYear(item, year) {
-            const leave = normalizeLeaveRecord(item);
-            if (!leave.startDate || !leave.endDate) {
-                return false;
-            }
-            const startYear = new Date(`${leave.startDate}T00:00:00`).getFullYear();
-            const endYear = new Date(`${leave.endDate}T00:00:00`).getFullYear();
-            return startYear <= year && endYear >= year;
-        }
-
-        function leaveRecordIntersectsCutoff(item, cutoffDate) {
-            const leave = normalizeLeaveRecord(item);
-            if (!leave.startDate || !leave.endDate) {
-                return false;
-            }
-            const end = new Date(`${leave.endDate}T00:00:00`);
-            return end >= cutoffDate;
-        }
-
         function buildYearArchivePayload(year) {
             const checkinDataYear = filterDateMapByYear(checkinData, year);
             const phoneRecordsYear = filterDateMapByYear(phoneResistData.records || {}, year);
             const taskDataYear = filterDateMapByYear(taskData, year);
             const scheduleTodosYear = filterDateMapByYear(scheduleData.todos || {}, year);
-            const leaveDataYear = (leaveData || []).filter(item => leaveRecordOverlapsYear(item, year));
+            const leaveDataYear = (leaveData || []).filter(item => isDateInYear(item.date, year));
             const currentTasksYear = (currentTasks || []).filter(task => isDateInYear(task.date, year));
 
             return {
@@ -1864,7 +1808,7 @@
             taskData = filterDateMapByCutoff(taskData, cutoffDate);
             phoneResistData.records = filterDateMapByCutoff(phoneResistData.records || {}, cutoffDate);
             scheduleData.todos = filterDateMapByCutoff(scheduleData.todos || {}, cutoffDate);
-            leaveData = (leaveData || []).filter(item => leaveRecordIntersectsCutoff(item, cutoffDate));
+            leaveData = (leaveData || []).filter(item => isDateOnOrAfterCutoff(item.date, cutoffDate));
             currentTasks = (currentTasks || []).filter(task => isDateOnOrAfterCutoff(task.date, cutoffDate));
 
             recalculatePhoneResistTotalCount();
@@ -1879,16 +1823,10 @@
         function mergeLeaveData(existing, imported) {
             const leaveMap = new Map();
             (existing || []).forEach(item => {
-                const leave = normalizeLeaveRecord(item);
-                if (leave.startDate && leave.endDate) {
-                    leaveMap.set(getLeaveRecordKey(leave), leave);
-                }
+                if (item && item.date) leaveMap.set(item.date, item);
             });
             (imported || []).forEach(item => {
-                const leave = normalizeLeaveRecord(item);
-                if (leave.startDate && leave.endDate) {
-                    leaveMap.set(getLeaveRecordKey(leave), leave);
-                }
+                if (item && item.date) leaveMap.set(item.date, item);
             });
             return Array.from(leaveMap.values());
         }
@@ -2065,63 +2003,9 @@
             },
             evening: {
                 checkIn: { hour: 20, minute: 0 },
-                checkOut: { start: { hour: 21, minute: 0 }, end: { hour: 22, minute: 0 } }
+                checkOut: { start: { hour: 22, minute: 0 }, end: { hour: 23, minute: 0 } }
             }
         };
-
-        function saveRecoverySnapshot(reason = 'manual') {
-            try {
-                const snapshot = {
-                    savedAt: new Date().toISOString(),
-                    reason,
-                    data: {
-                        checkinData,
-                        phoneResistData,
-                        taskData,
-                        scheduleData,
-                        leaveData,
-                        achievements,
-                        currentTasks
-                    }
-                };
-                const existing = JSON.parse(localStorage.getItem(cloudSyncRecoveryKey) || '[]');
-                const snapshots = Array.isArray(existing) ? existing : [];
-                snapshots.push(snapshot);
-                const trimmed = snapshots.slice(-cloudSyncRecoveryLimit);
-                localStorage.setItem(cloudSyncRecoveryKey, JSON.stringify(trimmed));
-            } catch (error) {
-                // 忽略快照写入失败，不影响主流程
-            }
-        }
-
-        function restoreLatestRecoverySnapshot() {
-            try {
-                const existing = JSON.parse(localStorage.getItem(cloudSyncRecoveryKey) || '[]');
-                const snapshots = Array.isArray(existing) ? existing : [];
-                const latest = snapshots[snapshots.length - 1];
-                if (!latest || !latest.data) {
-                    updateCloudSyncStatus('没有可恢复的同步前快照', 'warning');
-                    return false;
-                }
-
-                checkinData = latest.data.checkinData && typeof latest.data.checkinData === 'object' ? latest.data.checkinData : {};
-                phoneResistData = latest.data.phoneResistData && typeof latest.data.phoneResistData === 'object' ? latest.data.phoneResistData : { totalCount: 0, records: {} };
-                taskData = latest.data.taskData && typeof latest.data.taskData === 'object' ? latest.data.taskData : {};
-                scheduleData = latest.data.scheduleData && typeof latest.data.scheduleData === 'object' ? latest.data.scheduleData : { selectedDate: '', todos: {} };
-                leaveData = Array.isArray(latest.data.leaveData) ? latest.data.leaveData : [];
-                achievements = Array.isArray(latest.data.achievements) ? latest.data.achievements : [];
-                currentTasks = Array.isArray(latest.data.currentTasks) ? latest.data.currentTasks : [];
-
-                ensureAppDataShape();
-                saveData({ skipCloudSync: true });
-                refreshAllViews();
-                updateCloudSyncStatus(`已恢复本地快照 · ${new Date(latest.savedAt).toLocaleString('zh-CN')}`, 'success');
-                return true;
-            } catch (error) {
-                updateCloudSyncStatus('恢复快照失败', 'error');
-                return false;
-            }
-        }
 
         function timeToMinutes(timeString) {
             const [hour, minute] = timeString.split(':').map(Number);
@@ -3537,15 +3421,8 @@
 
             document.getElementById('schedule-todo-list').addEventListener('change', function(event) {
                 const checkbox = event.target.closest('[data-schedule-todo-id]');
-                if (checkbox) {
-                    toggleScheduleTodo(checkbox.dataset.scheduleTodoId, checkbox.checked);
-                    return;
-                }
-
-                const prioritySelect = event.target.closest('[data-schedule-todo-priority-id]');
-                if (prioritySelect) {
-                    updateScheduleTodoPriority(prioritySelect.dataset.scheduleTodoPriorityId, Number(prioritySelect.value));
-                }
+                if (!checkbox) return;
+                toggleScheduleTodo(checkbox.dataset.scheduleTodoId, checkbox.checked);
             });
 
             document.getElementById('schedule-todo-list').addEventListener('click', function(event) {
@@ -3562,39 +3439,6 @@
             const month = String(monthIndex + 1).padStart(2, '0');
             const date = String(day).padStart(2, '0');
             return `${year}-${month}-${date}`;
-        }
-
-        function getTodoPriorityValue(todo) {
-            const value = Number(todo?.priority);
-            if (value >= 1 && value <= 3) {
-                return value;
-            }
-            return 2;
-        }
-
-        function getTodoPriorityLabel(priority) {
-            if (priority === 3) return '高';
-            if (priority === 2) return '中';
-            return '低';
-        }
-
-        function getTodoPriorityPillClass(priority) {
-            if (priority === 3) return 'bg-red-100 text-red-700';
-            if (priority === 2) return 'bg-amber-100 text-amber-700';
-            return 'bg-sky-100 text-sky-700';
-        }
-
-        function getSortedScheduleTodos(list = []) {
-            return [...list]
-                .map((item, index) => ({ item, index }))
-                .sort((left, right) => {
-                    const priorityDiff = getTodoPriorityValue(right.item) - getTodoPriorityValue(left.item);
-                    if (priorityDiff !== 0) {
-                        return priorityDiff;
-                    }
-                    return left.index - right.index;
-                })
-                .map(entry => entry.item);
         }
 
         function renderScheduleCalendar() {
@@ -3617,26 +3461,25 @@
 
             for (let day = 1; day <= daysInMonth; day++) {
                 const dateKey = formatDateKey(year, month, day);
-                const todos = getSortedScheduleTodos(scheduleData.todos[dateKey] || []);
+                const todos = scheduleData.todos[dateKey] || [];
                 const doneCount = todos.filter(item => item.done).length;
                 const allCompleted = todos.length > 0 && doneCount === todos.length;
                 const selected = scheduleData.selectedDate === dateKey;
                 const isToday = today === dateKey;
-                const isLeaveDate = isDateOnLeave(dateKey);
 
                 const dayCell = document.createElement('button');
                 dayCell.type = 'button';
                 dayCell.dataset.dateKey = dateKey;
-                dayCell.className = `h-20 rounded-lg border p-2 text-left transition-all ${selected ? (isLeaveDate ? 'border-gray-400 bg-gray-100' : 'border-primary bg-primary/10') : (isLeaveDate ? 'border-gray-300 bg-gray-100 hover:border-gray-400' : 'border-gray-200 bg-white hover:border-primary/60')} ${isToday ? 'ring-1 ring-primary/40' : ''}`;
+                dayCell.className = `h-20 rounded-lg border p-2 text-left transition-all ${selected ? 'border-primary bg-primary/10' : 'border-gray-200 bg-white hover:border-primary/60'} ${isToday ? 'ring-1 ring-primary/40' : ''}`;
                 dayCell.innerHTML = `
                     <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium ${isLeaveDate ? 'text-gray-500' : 'text-gray-700'}">${day}</span>
+                        <span class="text-sm font-medium text-gray-700">${day}</span>
                         <div class="flex items-center gap-1">
                             ${allCompleted ? '<span class="w-2 h-2 rounded-full bg-emerald-500 inline-block" title="已完成全部待办"></span>' : ''}
                             ${todos.length ? `<span class="text-[11px] px-1.5 py-0.5 rounded-full ${allCompleted ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-600'}">${doneCount}/${todos.length}</span>` : ''}
                         </div>
                     </div>
-                    <div class="mt-1 text-[11px] ${isLeaveDate ? 'text-gray-400' : 'text-gray-500'} truncate">${todos[0] ? todos[0].text : (isLeaveDate ? '请假' : '')}</div>
+                    <div class="mt-1 text-[11px] text-gray-500 truncate">${todos[0] ? todos[0].text : ''}</div>
                 `;
 
                 dayCell.addEventListener('click', function() {
@@ -3660,29 +3503,19 @@
 
             const list = scheduleData.todos[selectedDate] || [];
             const listContainer = document.getElementById('schedule-todo-list');
-            const sortedList = getSortedScheduleTodos(list);
 
-            if (!sortedList.length) {
+            if (!list.length) {
                 listContainer.innerHTML = '<div class="text-sm text-gray-500">这一天还没有待办事项</div>';
                 return;
             }
 
             listContainer.innerHTML = '';
-            sortedList.forEach(item => {
-                const priorityValue = getTodoPriorityValue(item);
-                const priorityLabel = getTodoPriorityLabel(priorityValue);
-                const priorityPillClass = getTodoPriorityPillClass(priorityValue);
+            list.forEach(item => {
                 const row = document.createElement('label');
                 row.className = 'flex items-center gap-3 bg-white px-3 py-2 rounded-lg border border-gray-200';
                 row.innerHTML = `
                     <input type="checkbox" data-schedule-todo-id="${item.id}" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary" ${item.done ? 'checked' : ''}>
                     <span class="flex-1 min-w-0 text-sm text-gray-700 ${item.done ? 'line-through decoration-2 text-gray-400' : ''}">${item.text}</span>
-                    <span class="px-2 py-0.5 text-xs rounded-full ${priorityPillClass}">${priorityLabel}</span>
-                    <select data-schedule-todo-priority-id="${item.id}" class="px-2 py-1 text-xs border border-gray-300 rounded-md bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option value="3" ${priorityValue === 3 ? 'selected' : ''}>高</option>
-                        <option value="2" ${priorityValue === 2 ? 'selected' : ''}>中</option>
-                        <option value="1" ${priorityValue === 1 ? 'selected' : ''}>低</option>
-                    </select>
                     <button type="button" data-delete-todo-id="${item.id}" class="px-2 py-1 text-xs rounded-md bg-red-100 text-red-700 hover:bg-red-200 transition-all">删除</button>
                 `;
                 listContainer.appendChild(row);
@@ -3691,9 +3524,7 @@
 
         function addScheduleTodo() {
             const input = document.getElementById('schedule-todo-input');
-            const priorityInput = document.getElementById('schedule-todo-priority');
             const text = input.value.trim();
-            const priority = Number(priorityInput?.value || 2);
 
             if (!text) {
                 alert('请输入待办事项');
@@ -3708,23 +3539,10 @@
             scheduleData.todos[selectedDate].push({
                 id: `todo_${Date.now()}`,
                 text,
-                done: false,
-                priority: getTodoPriorityValue({ priority })
+                done: false
             });
 
             input.value = '';
-            saveData();
-            renderScheduleCalendar();
-            renderSelectedDateTodos();
-        }
-
-        function updateScheduleTodoPriority(todoId, priority) {
-            const selectedDate = scheduleData.selectedDate || getTodayString();
-            const list = scheduleData.todos[selectedDate] || [];
-            const target = list.find(item => item.id === todoId);
-            if (!target) return;
-
-            target.priority = getTodoPriorityValue({ priority });
             saveData();
             renderScheduleCalendar();
             renderSelectedDateTodos();
@@ -3842,18 +3660,17 @@
                 const hasHistory = summary.tasks.length > 0;
                 const selected = historyTaskView.selectedDate === dateKey;
                 const isToday = today === dateKey;
-                const isLeaveDate = isDateOnLeave(dateKey);
 
                 const dayCell = document.createElement('button');
                 dayCell.type = 'button';
                 dayCell.dataset.dateKey = dateKey;
-                dayCell.className = `h-20 rounded-lg border p-2 text-left transition-all ${selected ? (isLeaveDate ? 'border-gray-400 bg-gray-100' : 'border-primary bg-primary/10') : (isLeaveDate ? 'border-gray-300 bg-gray-100 hover:border-gray-400' : 'border-gray-200 bg-white hover:border-primary/60')} ${isToday ? 'ring-1 ring-primary/40' : ''}`;
+                dayCell.className = `h-20 rounded-lg border p-2 text-left transition-all ${selected ? 'border-primary bg-primary/10' : 'border-gray-200 bg-white hover:border-primary/60'} ${isToday ? 'ring-1 ring-primary/40' : ''}`;
                 dayCell.innerHTML = `
                     <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium ${isLeaveDate ? 'text-gray-500' : 'text-gray-700'}">${day}</span>
+                        <span class="text-sm font-medium text-gray-700">${day}</span>
                         ${hasHistory ? `<span class="text-[11px] px-1.5 py-0.5 rounded-full bg-rose-100 text-rose-700">${summary.groupedCount}组</span>` : ''}
                     </div>
-                    <div class="mt-1 text-[11px] ${isLeaveDate ? 'text-gray-400' : 'text-gray-500'} truncate">${hasHistory ? `完成${summary.tasks.length}段 · ${formatTaskDurationLabel(summary.totalMinutes)}` : (isLeaveDate ? '请假' : '')}</div>
+                    <div class="mt-1 text-[11px] text-gray-500 truncate">${hasHistory ? `完成${summary.tasks.length}段 · ${formatTaskDurationLabel(summary.totalMinutes)}` : ''}</div>
                 `;
 
                 dayCell.addEventListener('click', function() {
@@ -3912,134 +3729,24 @@
         function initLeaveManagement() {
             // 设置默认请假日期为今天
             const today = getTodayString();
-            document.getElementById('leave-start-date').value = today;
-            document.getElementById('leave-end-date').value = today;
-            document.getElementById('leave-start-time').value = '';
-            document.getElementById('leave-end-time').value = '';
+            document.getElementById('leave-date').value = today;
             
             // 添加请假按钮事件
             document.getElementById('add-leave').addEventListener('click', function() {
                 addLeave();
             });
-
-            rebuildLeaveFlagsFromRecords();
-
-            renderScheduleCalendar();
-            renderHistoryTaskCalendar();
             
             // 更新请假记录列表
             updateLeaveRecordsList();
         }
-
-        function normalizeLeaveRecord(leave) {
-            const startDate = leave.startDate || leave.date;
-            const endDate = leave.endDate || leave.date;
-            return {
-                startDate,
-                endDate,
-                startTime: typeof leave.startTime === 'string' ? leave.startTime : '',
-                endTime: typeof leave.endTime === 'string' ? leave.endTime : '',
-                reason: leave.reason || ''
-            };
-        }
-
-        function getLeaveRecordKey(leave) {
-            return `${leave.startDate}|${leave.endDate}|${leave.startTime || ''}|${leave.endTime || ''}`;
-        }
-
-        function formatLeaveTimeLabel(startTime, endTime) {
-            const start = (startTime || '').trim();
-            const end = (endTime || '').trim();
-
-            if (start && end) {
-                return ` (${start} - ${end})`;
-            }
-            if (start) {
-                return ` (起始 ${start})`;
-            }
-            if (end) {
-                return ` (截至 ${end})`;
-            }
-            return '';
-        }
-
-        function isDateOnLeave(dateKey) {
-            return (leaveData || []).some(item => {
-                const leave = normalizeLeaveRecord(item);
-                if (!leave.startDate || !leave.endDate) {
-                    return false;
-                }
-                return dateKey >= leave.startDate && dateKey <= leave.endDate;
-            });
-        }
-
-        function getLeaveDateRange(startDate, endDate) {
-            const result = [];
-            const cursor = new Date(`${startDate}T00:00:00`);
-            const end = new Date(`${endDate}T00:00:00`);
-            while (cursor <= end) {
-                result.push(cursor.toISOString().slice(0, 10));
-                cursor.setDate(cursor.getDate() + 1);
-            }
-            return result;
-        }
-
-        function rebuildLeaveFlagsFromRecords() {
-            Object.keys(checkinData).forEach(date => {
-                checkinData[date].leave = false;
-                checkinData[date].leaveReason = '';
-            });
-
-            leaveData.forEach(item => {
-                const leave = normalizeLeaveRecord(item);
-                if (!leave.startDate || !leave.endDate) {
-                    return;
-                }
-
-                const dates = getLeaveDateRange(leave.startDate, leave.endDate);
-                dates.forEach(date => {
-                    if (!checkinData[date]) {
-                        checkinData[date] = {
-                            morning: { checkIn: null, checkOut: null, checkOutMode: null, status: { checkIn: null, checkOut: null } },
-                            afternoon: { checkIn: null, checkOut: null, checkOutMode: null, status: { checkIn: null, checkOut: null } },
-                            evening: { checkIn: null, checkOut: null, checkOutMode: null, status: { checkIn: null, checkOut: null } },
-                            leave: false,
-                            leaveReason: ''
-                        };
-                    }
-
-                    checkinData[date].leave = true;
-                    checkinData[date].leaveReason = leave.reason;
-                });
-            });
-        }
         
         // 添加请假记录
         function addLeave() {
-            const startDate = document.getElementById('leave-start-date').value;
-            const endDateInput = document.getElementById('leave-end-date').value;
-            const endDate = endDateInput || startDate;
-            const startTime = document.getElementById('leave-start-time').value;
-            const endTime = document.getElementById('leave-end-time').value;
+            const date = document.getElementById('leave-date').value;
             const reason = document.getElementById('leave-reason').value.trim();
             
-            if (!startDate) {
-                alert('请选择请假开始日期');
-                return;
-            }
-
-            if (!endDate) {
-                alert('请选择请假结束日期');
-                return;
-            }
-
-            if (new Date(`${endDate}T00:00:00`) < new Date(`${startDate}T00:00:00`)) {
-                alert('结束日期不能早于开始日期');
-                return;
-            }
-
-            if (startDate === endDate && startTime && endTime && endTime < startTime) {
-                alert('同一天请假时，结束时间不能早于开始时间');
+            if (!date) {
+                alert('请选择请假日期');
                 return;
             }
             
@@ -4048,29 +3755,30 @@
                 return;
             }
             
-            // 检查是否已有该区间的请假记录
-            const existingLeaveIndex = leaveData.findIndex(item => {
-                const leave = normalizeLeaveRecord(item);
-                return leave.startDate === startDate
-                    && leave.endDate === endDate
-                    && (leave.startTime || '') === startTime
-                    && (leave.endTime || '') === endTime;
-            });
+            // 检查是否已有该日期的请假记录
+            const existingLeaveIndex = leaveData.findIndex(leave => leave.date === date);
             
             if (existingLeaveIndex !== -1) {
                 // 更新现有记录
                 leaveData[existingLeaveIndex].reason = reason;
-                leaveData[existingLeaveIndex].startDate = startDate;
-                leaveData[existingLeaveIndex].endDate = endDate;
-                leaveData[existingLeaveIndex].startTime = startTime;
-                leaveData[existingLeaveIndex].endTime = endTime;
-                delete leaveData[existingLeaveIndex].date;
             } else {
                 // 添加新记录
-                leaveData.push({ startDate, endDate, startTime, endTime, reason });
+                leaveData.push({ date, reason });
             }
-
-            rebuildLeaveFlagsFromRecords();
+            
+            // 更新打卡数据
+            if (!checkinData[date]) {
+                checkinData[date] = {
+                    morning: { checkIn: null, checkOut: null, checkOutMode: null, status: { checkIn: null, checkOut: null } },
+                    afternoon: { checkIn: null, checkOut: null, checkOutMode: null, status: { checkIn: null, checkOut: null } },
+                    evening: { checkIn: null, checkOut: null, checkOutMode: null, status: { checkIn: null, checkOut: null } },
+                    leave: false,
+                    leaveReason: ''
+                };
+            }
+            
+            checkinData[date].leave = true;
+            checkinData[date].leaveReason = reason;
             
             // 保存数据
             saveData();
@@ -4081,9 +3789,8 @@
             // 更新请假记录列表
             updateLeaveRecordsList();
             
-            // 如果区间包含今天，更新打卡按钮状态
-            const today = getTodayString();
-            if (today >= startDate && today <= endDate) {
+            // 如果是今天的请假，更新打卡按钮状态
+            if (date === getTodayString()) {
                 updateCheckinButtons();
                 updateTodayStatus();
             }
@@ -4098,33 +3805,23 @@
                 return;
             }
             
-            // 按开始日期排序 (最新的在前)
-            const sortedLeaveData = [...leaveData].sort((a, b) => {
-                const left = normalizeLeaveRecord(a);
-                const right = normalizeLeaveRecord(b);
-                return new Date(`${right.startDate}T00:00:00`) - new Date(`${left.startDate}T00:00:00`);
-            });
+            // 按日期排序 (最新的在前)
+            const sortedLeaveData = [...leaveData].sort((a, b) => new Date(b.date) - new Date(a.date));
             
             tableBody.innerHTML = '';
             
             sortedLeaveData.forEach(leave => {
                 const row = document.createElement('tr');
-                const normalized = normalizeLeaveRecord(leave);
                 
-                // 格式化日期区间
-                const start = new Date(`${normalized.startDate}T00:00:00`);
-                const end = new Date(`${normalized.endDate}T00:00:00`);
-                const formattedStart = start.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
-                const formattedEnd = end.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
-                let formattedDate = normalized.startDate === normalized.endDate ? formattedStart : `${formattedStart} - ${formattedEnd}`;
-                formattedDate += formatLeaveTimeLabel(normalized.startTime, normalized.endTime);
-                const leaveKey = getLeaveRecordKey(normalized);
+                // 格式化日期
+                const date = new Date(leave.date);
+                const formattedDate = date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
                 
                 row.innerHTML = `
                     <td class="py-2 px-4 border-b border-gray-200">${formattedDate}</td>
-                    <td class="py-2 px-4 border-b border-gray-200">${normalized.reason}</td>
+                    <td class="py-2 px-4 border-b border-gray-200">${leave.reason}</td>
                     <td class="py-2 px-4 border-b border-gray-200">
-                        <button class="delete-leave px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs" data-key="${leaveKey}">删除</button>
+                        <button class="delete-leave px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs" data-date="${leave.date}">删除</button>
                     </td>
                 `;
                 
@@ -4134,22 +3831,23 @@
             // 添加删除按钮事件
             document.querySelectorAll('.delete-leave').forEach(button => {
                 button.addEventListener('click', function() {
-                    const leaveKey = this.getAttribute('data-key');
-                    deleteLeave(leaveKey);
+                    const date = this.getAttribute('data-date');
+                    deleteLeave(date);
                 });
             });
         }
         
         // 删除请假记录
-        function deleteLeave(leaveKey) {
+        function deleteLeave(date) {
             if (confirm('确定要删除这条请假记录吗？')) {
                 // 从请假数据中删除
-                leaveData = leaveData.filter(item => {
-                    const leave = normalizeLeaveRecord(item);
-                    return getLeaveRecordKey(leave) !== leaveKey;
-                });
-
-                rebuildLeaveFlagsFromRecords();
+                leaveData = leaveData.filter(leave => leave.date !== date);
+                
+                // 更新打卡数据
+                if (checkinData[date]) {
+                    checkinData[date].leave = false;
+                    checkinData[date].leaveReason = '';
+                }
                 
                 // 保存数据
                 saveData();
@@ -4157,9 +3855,11 @@
                 // 更新请假记录列表
                 updateLeaveRecordsList();
                 
-                // 更新今日打卡按钮与状态
-                updateCheckinButtons();
-                updateTodayStatus();
+                // 如果是今天的请假，更新打卡按钮状态
+                if (date === getTodayString()) {
+                    updateCheckinButtons();
+                    updateTodayStatus();
+                }
             }
         }
         
@@ -4596,17 +4296,6 @@
             
             // 总克制次数
             document.getElementById('total-phone-resist').textContent = phoneResistData.totalCount;
-
-            // 请假天数
-            const leaveDaysSet = new Set();
-            (leaveData || []).forEach(item => {
-                const leave = normalizeLeaveRecord(item);
-                if (!leave.startDate || !leave.endDate) {
-                    return;
-                }
-                getLeaveDateRange(leave.startDate, leave.endDate).forEach(date => leaveDaysSet.add(date));
-            });
-            document.getElementById('total-leave-days').textContent = leaveDaysSet.size;
             
             // 获得成就数
             document.getElementById('achievement-count').textContent = achievements.length;
